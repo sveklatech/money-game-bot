@@ -1,5 +1,8 @@
 from telegram import Update
-from telegram.ext import ContextTypes, ConversationHandler, CallbackQueryHandler, CommandHandler
+from telegram.ext import (
+    ContextTypes, ConversationHandler, CallbackQueryHandler,
+    CommandHandler, MessageHandler, filters
+)
 from database.database import get_user, start_plan, is_day_completed, complete_day, get_stats
 from services.content import get_day
 from keyboards.keyboards import (
@@ -140,6 +143,43 @@ async def receive_evening_answer(update: Update, context: ContextTypes.DEFAULT_T
     await update.message.reply_text(response, parse_mode="Markdown", reply_markup=main_menu_keyboard())
     context.user_data.pop("completing_day", None)
     return ConversationHandler.END
+
+
+async def skip_evening_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    day_number = context.user_data.get("completing_day")
+    if day_number:
+        complete_day(user_id, day_number, "")
+        day_data = get_day(day_number)
+        db_user = get_user(user_id)
+        next_day = db_user["current_day"] if db_user else day_number + 1
+        response = f"✅ *День {day_number} завершён!*\n\n✦ _{day_data['affirmation']}_\n\n"
+        if next_day <= 30:
+            next_data = get_day(next_day)
+            if next_data:
+                response += f"Завтра — *День {next_day}: {next_data['title']}*"
+        await update.message.reply_text(response, parse_mode="Markdown", reply_markup=main_menu_keyboard())
+        context.user_data.pop("completing_day", None)
+    return ConversationHandler.END
+
+
+def get_complete_day_conversation():
+    return ConversationHandler(
+        entry_points=[
+            CallbackQueryHandler(complete_day_callback, pattern="^complete_day_\\d+$"),
+        ],
+        states={
+            EVENING_ANSWER: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, receive_evening_answer),
+                CommandHandler("skip", skip_evening_answer),
+            ],
+        },
+        fallbacks=[
+            CommandHandler("skip", skip_evening_answer),
+            CommandHandler("start", skip_evening_answer),
+        ],
+        allow_reentry=True,
+    )
 
 
 async def onboarding_start_plan_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):

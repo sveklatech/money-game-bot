@@ -23,8 +23,8 @@ from services.scheduler import setup_scheduler
 
 from handlers.start import start_handler, help_handler
 from handlers.daily import (
-    show_day_handler, complete_day_callback, onboarding_start_plan_callback,
-    receive_evening_answer, EVENING_ANSWER
+    show_day_handler, onboarding_start_plan_callback,
+    get_complete_day_conversation
 )
 from handlers.process_handler import (
     get_process_conversation_handler, mini_process_handler
@@ -74,6 +74,7 @@ def main():
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(get_process_conversation_handler())
+    app.add_handler(get_complete_day_conversation())
     app.add_handler(get_gratitude_conversation())
     app.add_handler(get_vocabulary_conversation())
     app.add_handler(get_weekly_review_conversation())
@@ -96,7 +97,6 @@ def main():
     app.add_handler(CallbackQueryHandler(back_main_callback, pattern="^back_main$"))
     app.add_handler(CallbackQueryHandler(onboarding_start_plan_callback, pattern="^onboarding_start_plan$"))
     app.add_handler(CallbackQueryHandler(show_day_handler, pattern="^show_day$"))
-    app.add_handler(CallbackQueryHandler(complete_day_callback, pattern="^complete_day_\\d+$"))
     app.add_handler(CallbackQueryHandler(mini_process_handler, pattern="^mini_process$"))
     app.add_handler(CallbackQueryHandler(journal_menu_handler, pattern="^journal_menu$"))
     app.add_handler(CallbackQueryHandler(journal_menu_handler, pattern="^journal_process$"))
