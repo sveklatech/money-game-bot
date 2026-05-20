@@ -135,7 +135,7 @@ def start_plan(user_id: int):
 def advance_day(user_id: int):
     conn = get_conn()
     conn.execute(
-        "UPDATE users SET current_day = current_day + 1 WHERE user_id = ? AND current_day < 30",
+        "UPDATE users SET current_day = current_day + 1 WHERE user_id = ? AND current_day <= 30",
         (user_id,)
     )
     conn.commit()

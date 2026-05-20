@@ -137,8 +137,11 @@ def process_step_keyboard(step: int, total: int = 6):
             InlineKeyboardButton("✍️ Записать в журнал", callback_data="process_save")
         ])
         keyboard.append([
-            InlineKeyboardButton("Пропустить", callback_data="process_skip_save")
+            InlineKeyboardButton("Пропустить запись", callback_data="process_skip_save")
         ])
+    keyboard.append([
+        InlineKeyboardButton("✖ Выйти из Процесса", callback_data="cancel")
+    ])
     return InlineKeyboardMarkup(keyboard)
 
 

@@ -186,14 +186,12 @@ async def cancel_process(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.pop("process_situation", None)
     context.user_data.pop("process_discomfort", None)
 
+    text = "Процесс отменён. Возвращаемся в главное меню."
     if update.callback_query:
         await update.callback_query.answer()
-        await update.callback_query.edit_message_text(
-            "Процесс отменён.",
-            reply_markup=main_menu_keyboard()
-        )
+        await update.callback_query.edit_message_text(text, reply_markup=main_menu_keyboard())
     elif update.message:
-        await update.message.reply_text("Процесс отменён.", reply_markup=main_menu_keyboard())
+        await update.message.reply_text(text, reply_markup=main_menu_keyboard())
 
     return ConversationHandler.END
 
@@ -240,6 +238,7 @@ def get_process_conversation_handler():
         fallbacks=[
             CallbackQueryHandler(cancel_process, pattern="^cancel$"),
             CommandHandler("cancel", cancel_process),
+            CommandHandler("start", cancel_process),
         ],
         allow_reentry=True,
     )

@@ -85,7 +85,6 @@ def main():
     app.add_handler(CommandHandler("day", show_day_handler))
     app.add_handler(CommandHandler("mini", mini_process_handler))
     app.add_handler(CommandHandler("journal", journal_menu_handler))
-    app.add_handler(CommandHandler("gratitude", lambda u, c: None))
     app.add_handler(CommandHandler("stats", stats_handler))
     app.add_handler(CommandHandler("settings", settings_menu_handler))
     app.add_handler(CommandHandler("manifesto", manifesto_command_handler))

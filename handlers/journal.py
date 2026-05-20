@@ -224,6 +224,7 @@ def get_gratitude_conversation():
         fallbacks=[
             CallbackQueryHandler(cancel_journal, pattern="^cancel$"),
             CommandHandler("cancel", cancel_journal),
+            CommandHandler("start", cancel_journal),
         ],
         allow_reentry=True,
     )
@@ -241,6 +242,7 @@ def get_vocabulary_conversation():
         fallbacks=[
             CallbackQueryHandler(cancel_journal, pattern="^cancel$"),
             CommandHandler("cancel", cancel_journal),
+            CommandHandler("start", cancel_journal),
         ],
         allow_reentry=True,
     )
@@ -259,6 +261,7 @@ def get_weekly_review_conversation():
         fallbacks=[
             CallbackQueryHandler(cancel_journal, pattern="^cancel$"),
             CommandHandler("cancel", cancel_journal),
+            CommandHandler("start", cancel_journal),
         ],
         allow_reentry=True,
     )

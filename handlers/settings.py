@@ -165,6 +165,7 @@ def get_settings_conversation():
         fallbacks=[
             CallbackQueryHandler(cancel_settings, pattern="^cancel$"),
             CommandHandler("cancel", cancel_settings),
+            CommandHandler("start", cancel_settings),
         ],
         allow_reentry=True,
     )
